@@ -25,6 +25,7 @@ public class Item {
     private Category category;
     @Column(name = "quantity")
     private Double quantity;
+    private Boolean deleted;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleItem> saleItems;

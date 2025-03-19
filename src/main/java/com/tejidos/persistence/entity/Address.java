@@ -12,12 +12,28 @@ public class Address {
     private Long number;
     private String province;
     private String state;
+    private Boolean deleted;
 
     @ManyToOne
     @JoinColumn(name = "id_client")
     private Client client;
 
     public Address() {
+    }
+
+    public Address(Client client, Long number, String province, String state) {
+        this.client = client;
+        this.number = number;
+        this.province = province;
+        this.state = state;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Client getClient() {
