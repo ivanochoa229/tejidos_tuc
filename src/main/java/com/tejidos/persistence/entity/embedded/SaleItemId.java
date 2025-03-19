@@ -7,42 +7,42 @@ import java.util.Objects;
 
 @Embeddable
 public class SaleItemId implements Serializable {
-    private Long idSale;
-    private Long idItem;
+    private Long id_sale;
+    private Long id_item;
 
     public SaleItemId() {
     }
 
-    public SaleItemId(Long idItem, Long idSale) {
-        this.idItem = idItem;
-        this.idSale = idSale;
+    public SaleItemId(Long idItem, Long id_sale) {
+        this.id_item = idItem;
+        this.id_sale = id_sale;
     }
 
-    public Long getIdItem() {
-        return idItem;
+    public Long getId_item() {
+        return id_item;
     }
 
-    public void setIdItem(Long idItem) {
-        this.idItem = idItem;
+    public void setId_item(Long id_item) {
+        this.id_item = id_item;
     }
 
-    public Long getIdSale() {
-        return idSale;
+    public Long getId_sale() {
+        return id_sale;
     }
 
-    public void setIdSale(Long idSale) {
-        this.idSale = idSale;
+    public void setId_sale(Long id_sale) {
+        this.id_sale = id_sale;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         SaleItemId that = (SaleItemId) o;
-        return Objects.equals(idSale, that.idSale) && Objects.equals(idItem, that.idItem);
+        return Objects.equals(id_sale, that.id_sale) && Objects.equals(id_item, that.id_item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idSale, idItem);
+        return Objects.hash(id_sale, id_item);
     }
 }

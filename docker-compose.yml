@@ -1,0 +1,47 @@
+services:
+  tejidos_backend:
+    build: .
+    # image: "b"
+    networks:
+      - tejidos-network
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/tejidos_db
+      DATABASE_USERNAME: test
+      DATABASE_PASSWORD: test
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    image: postgres:16.2-alpine
+    networks:
+      - tejidos-network
+    container_name: db-postgres-tejidos
+    restart: always
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: tejidos_db
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
+    ports:
+      - "5432:5432"
+
+
+  pgadmin_service:
+    image: dpage/pgadmin4:8.7
+    networks:
+      - tejidos-network
+    restart: always
+    container_name: pgadmin4_tejidos
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres_db
+
+networks:
+  tejidos-network:
+    driver: bridge
