@@ -23,8 +23,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "id_category")
     private Category category;
-    @Column(name = "quantity_in_stock")
-    private Double quantityInStock;
+    @Column(name = "quantity")
+    private Double quantity;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleItem> saleItems;
@@ -81,11 +81,11 @@ public class Item {
         this.saleItems = saleItems;
     }
 
-    public Double getQuantityInStock() {
-        return quantityInStock;
+    public Double getQuantity() {
+        return quantity;
     }
 
-    public void setQuantityInStock(Double quantityInStock) {
-        this.quantityInStock = quantityInStock;
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
     }
 }
