@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemResponse findById(Long idItem) {
-        Optional<Item> optionalItem = itemRepository.findByIdAndDeletedFalse(idItem);
+        Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
             throw new RuntimeException();
         }
@@ -47,13 +47,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemResponse updateItem(ItemRequest itemRequest, Long idItem) {
-        Optional<Item> optionalItem = itemRepository.findByIdAndDeletedFalse(idItem);
+        Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
             throw new RuntimeException();
         }
         Item item = optionalItem.get();
-        Category category = new Category(itemRequest.category());
-        Unit unit = new Unit(itemRequest.unit());
+        Category category = new Category(itemRequest.idCategory());
+        Unit unit = new Unit(itemRequest.idUnit());
         item.setPriceItem(itemRequest.priceItem());
         item.setDescriptionItem(itemRequest.descriptionItem());
         item.setQuantity(item.getQuantity());
@@ -65,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public String deleteItem(Long idItem) {
-        Optional<Item> optionalItem = itemRepository.findByIdAndDeletedFalse(idItem);
+        Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
             throw new RuntimeException();
         }
@@ -76,9 +76,18 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public String saveItem(ItemRequest itemRequest) {
-        Unit unit = new Unit(itemRequest.unit());
-        Category category = new Category(itemRequest.category());
+        Unit unit = new Unit(itemRequest.idUnit());
+        Category category = new Category(itemRequest.idCategory());
         itemRepository.save(new Item(category, itemRequest.descriptionItem(), itemRequest.priceItem(), itemRequest.quantity(), unit));
         return "Item created successfully";
+    }
+
+    @Override
+    public Item findEntityById(Long id) {
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if(optionalItem.isEmpty()){
+            throw new RuntimeException();
+        }
+        return optionalItem.get();
     }
 }

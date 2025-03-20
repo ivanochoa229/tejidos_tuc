@@ -1,7 +1,7 @@
 -- Crear la tabla categories
 CREATE TABLE IF NOT EXISTS categories (
     id_category SERIAL PRIMARY KEY,
-    name VARCHAR(45) NOT NULL UNIQUE
+    name_category VARCHAR(45) NOT NULL UNIQUE
 );
 
 -- Crear la tabla units
@@ -13,12 +13,12 @@ CREATE TABLE IF NOT EXISTS units (
 -- Crear la tabla items (con campo deleted)
 CREATE TABLE IF NOT EXISTS items (
     id_item SERIAL PRIMARY KEY,
-    price DOUBLE PRECISION NOT NULL,
+    price_item DOUBLE PRECISION NOT NULL,
     quantity DOUBLE PRECISION NOT NULL,
-    name VARCHAR(45) NOT NULL UNIQUE,
+    description_item VARCHAR(45) NOT NULL UNIQUE,
     id_category INT NOT NULL,
     id_unit INT NOT NULL,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE, -- Campo deleted
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT fk_item_category
         FOREIGN KEY (id_category)
         REFERENCES categories (id_category)
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS clients (
     lastname VARCHAR(45),
     dni VARCHAR(45) UNIQUE,
     phone VARCHAR(45) NOT NULL,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE -- Campo deleted
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Crear la tabla sales
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS addresses (
     state VARCHAR(45) NOT NULL,
     province VARCHAR(45) NOT NULL,
     id_client INT NOT NULL,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE, -- Campo deleted
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT fk_address_client
         FOREIGN KEY (id_client)
         REFERENCES clients (id_client)

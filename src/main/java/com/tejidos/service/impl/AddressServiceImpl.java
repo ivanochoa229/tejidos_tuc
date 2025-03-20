@@ -27,7 +27,7 @@ public class AddressServiceImpl implements AddressService {
     public List<AddressResponse> findAllByClient(Long idClient) {
         return addressRepository.findAllByClientIdAndNotDeleted(idClient)
                 .stream()
-                .map(a -> new AddressResponse(a.getIdAddress(), a.getNumber(), a.getProvince(), a.getState()))
+                .map(a -> new AddressResponse(a.getIdAddress(), a.getNumber(), a.getProvince(), a.getState(), a.getStreet()))
                 .toList();
     }
 
@@ -38,7 +38,7 @@ public class AddressServiceImpl implements AddressService {
             throw new RuntimeException();
         }
         Address address = optionalAddress.get();
-        return new AddressResponse(address.getIdAddress(), address.getNumber(), address.getProvince(), address.getState());
+        return new AddressResponse(address.getIdAddress(), address.getNumber(), address.getProvince(), address.getState(), address.getStreet());
     }
 
     @Override
@@ -48,11 +48,12 @@ public class AddressServiceImpl implements AddressService {
             throw new RuntimeException();
         }
         Address address = optionalAddress.get();
-        address.setNumber(addressRequest.number() == null ? address.getNumber() : addressRequest.number());
-        address.setProvince(addressRequest.province().isEmpty() ? address.getProvince() : addressRequest.province());
-        address.setState(addressRequest.state().isEmpty() ? address.getState() : addressRequest.state());
+        address.setNumber(addressRequest.number());
+        address.setProvince(addressRequest.province());
+        address.setState(addressRequest.state());
+        address.setStreet(addressRequest.street());
         addressRepository.save(address);
-        return new AddressResponse(address.getIdAddress(), address.getNumber(), address.getProvince(), address.getState());
+        return new AddressResponse(address.getIdAddress(), address.getNumber(), address.getProvince(), address.getState(), addressRequest.street());
     }
 
     @Override
@@ -60,7 +61,7 @@ public class AddressServiceImpl implements AddressService {
         if(!clientService.clientExitsAndIsNotDeleted(addressRequest.idClient())){
             throw new RuntimeException();
         }
-        addressRepository.save(new Address(new Client(addressRequest.idClient()), addressRequest.number(), addressRequest.province(), addressRequest.state()));
+        addressRepository.save(new Address(new Client(addressRequest.idClient()), addressRequest.number(), addressRequest.province(), addressRequest.state(), addressRequest.street()));
         return "Address created successfully";
     }
 

@@ -1,5 +1,6 @@
 package com.tejidos.service;
 
+import com.tejidos.persistence.entity.Item;
 import com.tejidos.presentation.dto.request.ItemRequest;
 import com.tejidos.presentation.dto.response.ItemResponse;
 
@@ -11,4 +12,5 @@ public interface ItemService {
     ItemResponse updateItem(ItemRequest itemRequest, Long idItem);
     String deleteItem(Long idItem);
     String saveItem(ItemRequest itemRequest);
+    Item findEntityById(Long id);
 }

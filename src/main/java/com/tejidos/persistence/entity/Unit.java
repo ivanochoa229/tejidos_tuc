@@ -20,6 +20,10 @@ public class Unit {
     public Unit() {
     }
 
+    public Unit(Long idUnit) {
+        this.idUnit = idUnit;
+    }
+
     public Unit(String unitName) {
         this.unitName = unitName;
     }

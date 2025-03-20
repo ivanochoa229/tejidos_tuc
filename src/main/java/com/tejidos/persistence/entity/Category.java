@@ -20,6 +20,10 @@ public class Category {
     public Category() {
     }
 
+    public Category(Long idCategory) {
+        this.idCategory = idCategory;
+    }
+
     public Category(String nameCategory) {
         this.nameCategory = nameCategory;
     }
