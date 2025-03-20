@@ -6,6 +6,7 @@ import com.tejidos.persistence.entity.Sale;
 import com.tejidos.persistence.repository.SaleRepository;
 import com.tejidos.presentation.dto.SaleItemDTO;
 import com.tejidos.presentation.dto.SaleLineDetail;
+import com.tejidos.presentation.dto.request.ItemRequest;
 import com.tejidos.presentation.dto.request.SaleRequest;
 import com.tejidos.presentation.dto.response.SaleResponse;
 import com.tejidos.service.ItemService;
@@ -58,28 +59,38 @@ public class SaleServiceImpl implements SaleService {
     public String cancelSale(Long idSale) {
         Sale sale = getSale(idSale);
         sale.setStatus(Status.CANCELLED);
-        saleRepository.save(sale);
+        sale.getSaleItems().stream()
+                .forEach( s -> {
+                    Item item = s.getItem();
+                    item.setQuantity(item.getQuantity() + s.getQuantity());
+                    itemService.updateItem(new ItemRequest(item.getDescriptionItem(), item.getPriceItem(), item.getUnit().getIdUnit(), item.getCategory().getIdCategory(), item.getQuantity()), item.getIdItem());
+                });
         return "Sale cancelled successfully";
     }
 
     @Override
     @Transactional
-    public SaleResponse saveSale(SaleRequest saleRequest) {
-        Sale sale = new Sale(new Client(saleRequest.idClient()),Status.PENDING_PAYMENT, 0.0 );
-        sale = saleRepository.save(sale);
-
+    public String saveSale(SaleRequest saleRequest) {
+        System.out.println("SALE ANTES: ");
+        Sale sale = saleRepository.save(new Sale(new Client(saleRequest.idClient()),Status.PENDING_PAYMENT, 0.0 ));
+        System.out.println("SALE DESPUES : "+ sale.getIdSale());
 
         List<SaleItemDTO> saleItems = new ArrayList<>();
         double total = 0.0;
 
         for (SaleLineDetail saleLineDetail : saleRequest.saleLineDetails()) {
 
-            Item item = new Item(saleLineDetail.itemId());
-
-            SaleItemDTO saleItem = new SaleItemDTO(sale.getIdSale(), item.getIdItem(), saleLineDetail.quantity(), item.getPriceItem(), item.getPriceItem() * saleLineDetail.quantity());
-
+            Item item = itemService.findEntityById(saleLineDetail.itemId());
+            if(item.getQuantity() - saleLineDetail.quantity() < 0){
+                return null;
+            }
+            SaleItemDTO saleItem = new SaleItemDTO(item.getIdItem(), sale.getIdSale(),saleLineDetail.quantity(), item.getPriceItem(), item.getPriceItem() * saleLineDetail.quantity());
             saleItems.add(saleItem);
+
+            item.setQuantity(item.getQuantity() - saleLineDetail.quantity());
+            itemService.updateItem(new ItemRequest(item.getDescriptionItem(), item.getPriceItem(), item.getUnit().getIdUnit(), item.getCategory().getIdCategory(), item.getQuantity()), item.getIdItem());
             total += saleItem.subtotal();
+
         }
 
         sale.setTotal(total);
@@ -87,7 +98,19 @@ public class SaleServiceImpl implements SaleService {
 
         saleItemService.saveAll(saleItems);
 
-        return new SaleResponse(sale.getIdSale(), sale.getTotal(), sale.getStatus().name(), saleItems.stream().map( s-> s.idSale().toString()).toList());
+        return "Sale Created Successfully";
+    }
+
+    @Override
+    public String finishSale(Long idSale) {
+        Optional<Sale> optionalSale = saleRepository.findById(idSale);
+        if (optionalSale.isEmpty()){
+            throw new RuntimeException();
+        }
+        Sale sale = optionalSale.get();
+        sale.setStatus(Status.FINISHED);
+        saleRepository.save(sale);
+        return "Sale finished successfully";
     }
 
 

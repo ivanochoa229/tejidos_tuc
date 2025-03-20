@@ -10,6 +10,7 @@ public class Address {
     @Column(name = "id_address")
     private Long idAddress;
     private Long number;
+    private String street;
     private String province;
     private String state;
     private Boolean deleted;
@@ -21,11 +22,21 @@ public class Address {
     public Address() {
     }
 
-    public Address(Client client, Long number, String province, String state) {
+    public Address(Client client, Long number, String province, String state, String street) {
         this.client = client;
         this.number = number;
         this.province = province;
         this.state = state;
+        this.street = street;
+        this.deleted = false;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public Boolean getDeleted() {

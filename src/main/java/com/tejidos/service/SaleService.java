@@ -9,5 +9,6 @@ public interface SaleService {
     List<SaleResponse> findAllByClient(Long idClient);
     SaleResponse findById(Long idSale);
     String cancelSale(Long idSale);
-    SaleResponse saveSale(SaleRequest saleRequest);
+    String saveSale(SaleRequest saleRequest);
+    String finishSale(Long idSale);
 }

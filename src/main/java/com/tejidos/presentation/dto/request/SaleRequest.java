@@ -4,5 +4,5 @@ import com.tejidos.presentation.dto.SaleLineDetail;
 
 import java.util.List;
 
-public record SaleRequest(Double total, Long idClient, List<SaleLineDetail> saleLineDetails) {
+public record SaleRequest(Long idClient, List<SaleLineDetail> saleLineDetails) {
 }

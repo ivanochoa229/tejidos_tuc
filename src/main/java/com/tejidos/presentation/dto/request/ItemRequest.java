@@ -2,7 +2,7 @@ package com.tejidos.presentation.dto.request;
 
 public record ItemRequest(String descriptionItem,
                           Double priceItem,
-                          String unit,
-                          String category,
+                          Long idUnit,
+                          Long idCategory,
                           Double quantity) {
 }

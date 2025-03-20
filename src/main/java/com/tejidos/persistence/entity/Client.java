@@ -30,7 +30,7 @@ public class Client {
         this.deleted = false;
     }
 
-    public Client(String dni, Boolean deleted, String lastname, String name, String phone) {
+    public Client(String name, String lastname, String dni, String phone) {
         this.dni = dni;
         this.deleted = false;
         this.lastname = lastname;
