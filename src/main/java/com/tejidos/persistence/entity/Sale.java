@@ -19,7 +19,29 @@ public class Sale {
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleItem> saleItems;
 
+    @ManyToOne
+    @JoinColumn(name = "id_client")
+    private Client client;
+
     public Sale() {
+    }
+
+    public Sale(Long idSale) {
+        this.idSale = idSale;
+    }
+
+    public Sale(Client client, Status status, Double total) {
+        this.client = client;
+        this.status = status;
+        this.total = total;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Long getIdSale() {

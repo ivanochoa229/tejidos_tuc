@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS units (
     unit_name VARCHAR(45) NOT NULL UNIQUE
 );
 
--- Crear la tabla items
+-- Crear la tabla items (con campo deleted)
 CREATE TABLE IF NOT EXISTS items (
     id_item SERIAL PRIMARY KEY,
     price DOUBLE PRECISION NOT NULL,
@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS items (
     name VARCHAR(45) NOT NULL UNIQUE,
     id_category INT NOT NULL,
     id_unit INT NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE, -- Campo deleted
     CONSTRAINT fk_item_category
         FOREIGN KEY (id_category)
         REFERENCES categories (id_category)
@@ -30,13 +31,14 @@ CREATE TABLE IF NOT EXISTS items (
         ON UPDATE NO ACTION
 );
 
--- Crear la tabla clients
+-- Crear la tabla clients (con campo deleted)
 CREATE TABLE IF NOT EXISTS clients (
     id_client SERIAL PRIMARY KEY,
     name VARCHAR(45) NOT NULL,
     lastname VARCHAR(45),
     dni VARCHAR(45) UNIQUE,
-    phone VARCHAR(45) NOT NULL
+    phone VARCHAR(45) NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE -- Campo deleted
 );
 
 -- Crear la tabla sales
@@ -72,7 +74,7 @@ CREATE TABLE IF NOT EXISTS sales_items (
         ON UPDATE NO ACTION
 );
 
--- Crear la tabla addresses
+-- Crear la tabla addresses (con campo deleted)
 CREATE TABLE IF NOT EXISTS addresses (
     id_address SERIAL PRIMARY KEY,
     street VARCHAR(45) NOT NULL,
@@ -80,6 +82,7 @@ CREATE TABLE IF NOT EXISTS addresses (
     state VARCHAR(45) NOT NULL,
     province VARCHAR(45) NOT NULL,
     id_client INT NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE, -- Campo deleted
     CONSTRAINT fk_address_client
         FOREIGN KEY (id_client)
         REFERENCES clients (id_client)

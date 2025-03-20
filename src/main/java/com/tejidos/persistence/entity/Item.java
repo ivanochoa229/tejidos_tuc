@@ -25,12 +25,35 @@ public class Item {
     private Category category;
     @Column(name = "quantity")
     private Double quantity;
+    private Boolean deleted;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleItem> saleItems;
     
 
     public Item() {
+    }
+
+    public Item(Long idItem) {
+        this.idItem = idItem;
+        this.deleted = false;
+    }
+
+    public Item(Category category, String descriptionItem, Double priceItem, Double quantity, Unit unit) {
+        this.category = category;
+        this.descriptionItem = descriptionItem;
+        this.priceItem = priceItem;
+        this.quantity = quantity;
+        this.unit = unit;
+        this.deleted = false;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public String getDescriptionItem() {
