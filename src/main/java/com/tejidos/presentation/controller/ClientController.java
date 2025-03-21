@@ -3,6 +3,7 @@ package com.tejidos.presentation.controller;
 import com.tejidos.presentation.dto.request.ClientRequest;
 import com.tejidos.presentation.dto.response.ClientResponse;
 import com.tejidos.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +31,12 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<String> saveClient(@RequestBody ClientRequest clientRequest){
+    public ResponseEntity<String> saveClient(@Valid @RequestBody ClientRequest clientRequest){
         return new ResponseEntity<>(clientService.saveClient(clientRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idClient}")
-    public ResponseEntity<ClientResponse> updateClient(@RequestBody ClientRequest clientRequest, @PathVariable Long idClient){
+    public ResponseEntity<ClientResponse> updateClient(@Valid @RequestBody ClientRequest clientRequest, @PathVariable Long idClient){
         return new ResponseEntity<>(clientService.updateClient(clientRequest,idClient), HttpStatus.OK);
     }
 

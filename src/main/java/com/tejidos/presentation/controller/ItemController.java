@@ -3,6 +3,7 @@ package com.tejidos.presentation.controller;
 import com.tejidos.presentation.dto.request.ItemRequest;
 import com.tejidos.presentation.dto.response.ItemResponse;
 import com.tejidos.service.ItemService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +31,12 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<String> saveItem(@RequestBody ItemRequest itemRequest){
+    public ResponseEntity<String> saveItem(@Valid  @RequestBody ItemRequest itemRequest){
         return new ResponseEntity<>(itemService.saveItem(itemRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idItem}")
-    public ResponseEntity<ItemResponse> updateItem(@RequestBody ItemRequest itemRequest, @PathVariable Long idItem){
+    public ResponseEntity<ItemResponse> updateItem(@Valid @RequestBody ItemRequest itemRequest, @PathVariable Long idItem){
         return new ResponseEntity<>(itemService.updateItem(itemRequest, idItem), HttpStatus.OK);
     }
 
