@@ -36,9 +36,18 @@ public class GlobalHandlerException {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ExceptionResponse> dataIntegrityViolationHandler(DataIntegrityViolationException exception, HttpServletRequest request){
-        logger.error("Data integrity violation exception: ");
+        String rootMessage = exception.getRootCause() != null ? exception.getRootCause().getMessage() : exception.getMessage();
+        String customMessage = "Error while saving the entity. ";
+        if (rootMessage.contains("violates foreign key constraint")) {
+            String relatedEntityName = extractRelatedEntityName(rootMessage);
+            String relatedIdValue = extractRelatedIdValue(rootMessage);
+            customMessage += "The entity '" + relatedEntityName + "' with ID '" + relatedIdValue + "' does not exist in the database.";
+        } else {
+            customMessage += "Details: " + rootMessage;
+        }
+
         ExceptionResponse exceptionResponse = new ExceptionResponse(
-                exception.getMessage(),
+                customMessage,
                 HttpStatus.BAD_REQUEST,
                 request.getMethod(),
                 request.getRequestURI()
@@ -81,4 +90,29 @@ public class GlobalHandlerException {
         return ResponseEntity.status(exceptionResponse.getStatus()).body(exceptionResponse);
     }
 
+    private String extractRelatedEntityName(String errorMessage) {
+
+        String regex = "not present in table \"(.*?)\"";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(errorMessage);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return "related entity";
+    }
+
+    private String extractRelatedIdValue(String errorMessage) {
+
+        String regex = "Key \\(.*?\\)=\\((\\d+)\\)";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(errorMessage);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return "unknown";
+    }
 }
