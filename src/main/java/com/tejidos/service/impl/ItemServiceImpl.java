@@ -9,6 +9,7 @@ import com.tejidos.presentation.dto.response.ItemResponse;
 import com.tejidos.service.ItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponse findById(Long idItem) {
         Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException("Item with id: " + idItem + " not found");
         }
         Item item = optionalItem.get();
         return new ItemResponse(item.getIdItem(), item.getDescriptionItem(), item.getPriceItem(),
@@ -49,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponse updateItem(ItemRequest itemRequest, Long idItem) {
         Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException("Item with id: " + idItem + " not found");
         }
         Item item = optionalItem.get();
         Category category = new Category(itemRequest.idCategory());
@@ -67,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
     public String deleteItem(Long idItem) {
         Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException("Item with id: " + idItem + " not found");
         }
         Item item = optionalItem.get();
         item.setDeleted(true);
@@ -78,15 +79,16 @@ public class ItemServiceImpl implements ItemService {
     public String saveItem(ItemRequest itemRequest) {
         Unit unit = new Unit(itemRequest.idUnit());
         Category category = new Category(itemRequest.idCategory());
-        itemRepository.save(new Item(category, itemRequest.descriptionItem(), itemRequest.priceItem(), itemRequest.quantity(), unit));
+        Item item = new Item(category, itemRequest.descriptionItem(), itemRequest.priceItem(), itemRequest.quantity(), unit);
+        itemRepository.save(item);
         return "Item created successfully";
     }
 
     @Override
-    public Item findEntityById(Long id) {
-        Optional<Item> optionalItem = itemRepository.findById(id);
+    public Item findEntityById(Long idItem) {
+        Optional<Item> optionalItem = itemRepository.findById(idItem);
         if(optionalItem.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Item with id: " + idItem + " not found");
         }
         return optionalItem.get();
     }

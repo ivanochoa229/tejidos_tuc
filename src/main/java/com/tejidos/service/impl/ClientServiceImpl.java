@@ -1,11 +1,13 @@
 package com.tejidos.service.impl;
 
+import com.tejidos.exception.CreationException;
 import com.tejidos.persistence.entity.Client;
 import com.tejidos.persistence.repository.ClientRepository;
 import com.tejidos.presentation.dto.request.ClientRequest;
 import com.tejidos.presentation.dto.response.ClientResponse;
 import com.tejidos.service.ClientService;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String saveClient(ClientRequest clientRequest) {
-        clientRepository.save(new Client(clientRequest.name(), clientRequest.lastname(), clientRequest.dni(), clientRequest.phone()));
+        Optional<Client> optionalClient = clientRepository.findByDni(clientRequest.dni());
+        if (optionalClient.isPresent()){
+            throw new CreationException("The client with the dni: " + clientRequest.dni() + " is already created.");
+        }
+        Client client = new Client(clientRequest.name(), clientRequest.lastname(), clientRequest.dni(), clientRequest.phone());
+        clientRepository.save(client);
         return "Client created successfully";
     }
 
@@ -35,7 +42,7 @@ public class ClientServiceImpl implements ClientService {
     public String deleteClient(Long idClient) {
         Optional<Client> optionalClient = clientRepository.findByIdClientAndDeletedFalse(idClient);
         if(optionalClient.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Client with id: " +  idClient + " not found.");
         }
         Client client = optionalClient.get();
         client.setDeleted(true);
@@ -55,7 +62,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse findById(Long idClient) {
         Optional<Client> optionalClient = clientRepository.findByIdClientAndDeletedFalse(idClient);
         if(optionalClient.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Client with id: " +  idClient + " not found.");
         }
         return getClientResponse(optionalClient.get());
     }
@@ -64,7 +71,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse updateClient(ClientRequest clientRequest, Long idClient) {
         Optional<Client> optionalClient = clientRepository.findByIdClientAndDeletedFalse(idClient);
         if(optionalClient.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Client with id: " +  idClient + " not found.");
         }
         Client client = optionalClient.get();
         client.setName(clientRequest.name() );
