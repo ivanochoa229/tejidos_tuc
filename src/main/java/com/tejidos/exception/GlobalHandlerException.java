@@ -1,6 +1,7 @@
 package com.tejidos.exception;
 
 import com.tejidos.presentation.dto.response.exception.ExceptionResponse;
+import com.tejidos.presentation.dto.response.exception.ValidationExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -9,9 +10,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.webjars.NotFoundException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestControllerAdvice
@@ -78,6 +84,22 @@ public class GlobalHandlerException {
             HttpServletRequest request) {
 
         return getExceptionBadRequest("The request body is missing or malformed.", request);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ValidationExceptionResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> validationErrors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            validationErrors.put(error.getField(), error.getDefaultMessage());
+        }
+
+        return new ValidationExceptionResponse(
+                "Validation failed",
+                HttpStatus.BAD_REQUEST,
+                ex.getParameter().getMethod().getName(),
+                ex.getParameter().getContainingClass().getName(),
+                validationErrors
+        );
     }
 
     private static ResponseEntity<ExceptionResponse> getExceptionBadRequest(String exception, HttpServletRequest request) {

@@ -3,6 +3,7 @@ package com.tejidos.presentation.controller;
 import com.tejidos.presentation.dto.request.SaleRequest;
 import com.tejidos.presentation.dto.response.SaleResponse;
 import com.tejidos.service.SaleService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class SaleController {
     }
 
     @PostMapping
-    public ResponseEntity<String> saveSale(@RequestBody SaleRequest saleRequest){
+    public ResponseEntity<String> saveSale(@Valid @RequestBody SaleRequest saleRequest){
         return new ResponseEntity<>(saleService.saveSale(saleRequest), HttpStatus.CREATED);
     }
 

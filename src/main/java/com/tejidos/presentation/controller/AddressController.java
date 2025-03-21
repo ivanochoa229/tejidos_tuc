@@ -3,6 +3,7 @@ package com.tejidos.presentation.controller;
 import com.tejidos.presentation.dto.request.AddressRequest;
 import com.tejidos.presentation.dto.response.AddressResponse;
 import com.tejidos.service.AddressService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +31,12 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<String> saveAddress(@RequestBody AddressRequest addressRequest){
+    public ResponseEntity<String> saveAddress(@Valid @RequestBody AddressRequest addressRequest){
         return new ResponseEntity<>(addressService.saveAddress(addressRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idAddress}")
-    public ResponseEntity<AddressResponse> updateAddress(@RequestBody AddressRequest addressRequest, @PathVariable Long idAddress){
+    public ResponseEntity<AddressResponse> updateAddress(@Valid @RequestBody AddressRequest addressRequest, @PathVariable Long idAddress){
         return new ResponseEntity<>(addressService.updateAddress(addressRequest, idAddress), HttpStatus.CREATED);
     }
 
