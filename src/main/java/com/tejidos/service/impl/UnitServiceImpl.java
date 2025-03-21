@@ -5,6 +5,7 @@ import com.tejidos.persistence.repository.UnitRepository;
 import com.tejidos.presentation.dto.response.UnitResponse;
 import com.tejidos.service.UnitService;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class UnitServiceImpl implements UnitService {
     public UnitResponse findById(Long idUnit) {
         Optional<Unit> optionalUnit = unitRepository.findById(idUnit);
         if(optionalUnit.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Unit with id: " + idUnit + " not found");
         }
         return new UnitResponse(optionalUnit.get().getIdUnit(), optionalUnit.get().getUnitName());
     }

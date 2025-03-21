@@ -5,6 +5,7 @@ import com.tejidos.persistence.repository.CategoryRepository;
 import com.tejidos.presentation.dto.response.CategoryResponse;
 import com.tejidos.service.CategoryService;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse findById(Long idCategory) {
         Optional<Category> category = categoryRepository.findById(idCategory);
         if(category.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Category with id: " + idCategory + " not found");
         }
         return new CategoryResponse(category.get().getIdCategory(), category.get().getNameCategory());
     }

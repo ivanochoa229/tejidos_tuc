@@ -15,6 +15,7 @@ import com.tejidos.service.SaleService;
 import com.tejidos.utils.Status;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class SaleServiceImpl implements SaleService {
     public String finishSale(Long idSale) {
         Optional<Sale> optionalSale = saleRepository.findById(idSale);
         if (optionalSale.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Sale with id: " + idSale + " not found");
         }
         Sale sale = optionalSale.get();
         sale.setStatus(Status.FINISHED);
@@ -117,7 +118,7 @@ public class SaleServiceImpl implements SaleService {
     private Sale getSale(Long idSale) {
         Optional<Sale> optionalSale = saleRepository.findById(idSale);
         if (optionalSale.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Sale with id: " + idSale + " not found");
         }
         return optionalSale.get();
     }

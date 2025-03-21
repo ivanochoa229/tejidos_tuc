@@ -6,8 +6,8 @@ import com.tejidos.persistence.repository.AddressRepository;
 import com.tejidos.presentation.dto.request.AddressRequest;
 import com.tejidos.presentation.dto.response.AddressResponse;
 import com.tejidos.service.AddressService;
-import com.tejidos.service.ClientService;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +16,9 @@ import java.util.Optional;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
-    private final ClientService clientService;
 
-    public AddressServiceImpl(AddressRepository addressRepository, ClientService clientService) {
+    public AddressServiceImpl(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
-        this.clientService = clientService;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class AddressServiceImpl implements AddressService {
     public AddressResponse findById(Long idAddress) {
         Optional<Address> optionalAddress = addressRepository.findById(idAddress);
         if(optionalAddress.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Address with id: " + idAddress + " not found");
         }
         Address address = optionalAddress.get();
         return new AddressResponse(address.getIdAddress(), address.getNumber(), address.getProvince(), address.getState(), address.getStreet());
@@ -45,7 +43,7 @@ public class AddressServiceImpl implements AddressService {
     public AddressResponse updateAddress(AddressRequest addressRequest, Long idAddress) {
         Optional<Address> optionalAddress = addressRepository.findById(idAddress);
         if(optionalAddress.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Address with id: " + idAddress + " not found");
         }
         Address address = optionalAddress.get();
         address.setNumber(addressRequest.number());
@@ -58,10 +56,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public String saveAddress(AddressRequest addressRequest) {
-        if(!clientService.clientExitsAndIsNotDeleted(addressRequest.idClient())){
-            throw new RuntimeException();
-        }
-        addressRepository.save(new Address(new Client(addressRequest.idClient()), addressRequest.number(), addressRequest.province(), addressRequest.state(), addressRequest.street()));
+        Address address = new Address(new Client(addressRequest.idClient()), addressRequest.number(), addressRequest.province(), addressRequest.state(), addressRequest.street());
+        addressRepository.save(address);
         return "Address created successfully";
     }
 
@@ -69,7 +65,7 @@ public class AddressServiceImpl implements AddressService {
     public String deleteAddress(Long idAddress) {
         Optional<Address> optionalAddress = addressRepository.findById(idAddress);
         if(optionalAddress.isEmpty()){
-            throw new RuntimeException();
+            throw new NotFoundException("Address with id: " + idAddress + " not found");
         }
         Address address = optionalAddress.get();
         address.setDeleted(true);
