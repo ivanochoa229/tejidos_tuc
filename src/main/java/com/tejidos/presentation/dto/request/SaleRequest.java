@@ -11,6 +11,8 @@ public record SaleRequest(
         @NotNull(message = "idClient cannot be null")
         @Min(value = 1, message = "idClient must be greater than 0")
         Long idClient,
+        @NotNull(message = "paymentRequest cannot be null")
+        PaymentRequest paymentRequest,
         @NotEmpty(message = "SaleLineDetails must have at least one element")
         List<SaleLineDetail> saleLineDetails) {
 }

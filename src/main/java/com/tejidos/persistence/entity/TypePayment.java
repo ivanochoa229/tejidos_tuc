@@ -12,6 +12,13 @@ public class TypePayment {
     @Column(name = "type_payment")
     private String typePayment;
 
+    public TypePayment() {
+    }
+
+    public TypePayment(Long idTypePayment) {
+        this.idTypePayment = idTypePayment;
+    }
+
     public Long getIdTypePayment() {
         return idTypePayment;
     }
