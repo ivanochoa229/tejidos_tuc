@@ -14,13 +14,41 @@ public class Payment {
     private Double totalPayment;
     @Column(name = "description_payment")
     private String descriptionPayment;
+    private Boolean deleted;
 
     @ManyToOne
     @JoinColumn(name = "id_type_payment")
-    private TypePayment typePaymentList;
+    private TypePayment typePayment;
 
     @OneToOne(mappedBy = "payment")
     private Sale sale;
+
+    public Payment() {
+        this.deleted = false;
+    }
+
+    public Payment(Double totalPayment, String descriptionPayment, TypePayment typePayment) {
+        this.totalPayment = totalPayment;
+        this.descriptionPayment = descriptionPayment;
+        this.typePayment = typePayment;
+        this.deleted = false;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public TypePayment getTypePayment() {
+        return typePayment;
+    }
+
+    public void setTypePayment(TypePayment typePayment) {
+        this.typePayment = typePayment;
+    }
 
     public Sale getSale() {
         return sale;
@@ -31,11 +59,11 @@ public class Payment {
     }
 
     public TypePayment getTypePaymentList() {
-        return typePaymentList;
+        return typePayment;
     }
 
     public void setTypePaymentList(TypePayment typePaymentList) {
-        this.typePaymentList = typePaymentList;
+        this.typePayment = typePaymentList;
     }
 
     public String getDescriptionPayment() {
