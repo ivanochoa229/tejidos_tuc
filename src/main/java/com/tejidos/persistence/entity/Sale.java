@@ -23,6 +23,10 @@ public class Sale {
     @JoinColumn(name = "id_client")
     private Client client;
 
+    @OneToOne
+    @JoinColumn(name = "id_payment", nullable = false)
+    private Payment payment;
+
     public Sale() {
     }
 
@@ -34,6 +38,14 @@ public class Sale {
         this.client = client;
         this.status = status;
         this.total = total;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public Client getClient() {
