@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 @Table(name = "payments")
 public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq_gen")
+    @SequenceGenerator(name = "payment_seq_gen", sequenceName = "payments_id_seq", allocationSize = 1)
     @Column(name = "id_payment")
     private Long idPayment;
     @Column(name = "total_payment")

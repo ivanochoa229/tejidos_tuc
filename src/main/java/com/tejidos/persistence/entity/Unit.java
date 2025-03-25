@@ -8,7 +8,8 @@ import java.util.List;
 @Table(name = "units")
 public class Unit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "unit_seq_gen")
+    @SequenceGenerator(name = "unit_seq_gen", sequenceName = "units_id_seq", allocationSize = 1)
     @Column(name = "id_unit")
     private Long idUnit;
     @Column(name = "unit_name")

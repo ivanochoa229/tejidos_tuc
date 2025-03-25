@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 @Table(name = "types_payment")
 public class TypePayment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "type_payment_seq_gen")
+    @SequenceGenerator(name = "type_payment_seq_gen", sequenceName = "types_payment_id_seq", allocationSize = 1)
     @Column(name = "id_type_payment")
     private Long idTypePayment;
     @Column(name = "type_payment")

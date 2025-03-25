@@ -1,7 +1,7 @@
 package com.tejidos.persistence.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.BooleanFlag;
+
 
 import java.util.List;
 
@@ -9,7 +9,8 @@ import java.util.List;
 @Table(name = "clients")
 public class Client {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_seq_gen")
+    @SequenceGenerator(name = "client_seq_gen", sequenceName = "clients_id_seq", allocationSize = 1)
     @Column(name = "id_client")
     private Long idClient;
     private String name;
