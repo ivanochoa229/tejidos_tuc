@@ -8,7 +8,8 @@ import java.util.List;
 @Table(name = "categories")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq_gen")
+    @SequenceGenerator(name = "category_seq_gen", sequenceName = "categories_id_seq", allocationSize = 1)
     @Column(name = "id_category")
     private Long idCategory;
     @Column(name = "name_category")

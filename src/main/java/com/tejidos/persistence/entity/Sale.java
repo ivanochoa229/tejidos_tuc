@@ -9,7 +9,8 @@ import java.util.List;
 @Table(name = "sales")
 public class Sale {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sale_seq_gen")
+    @SequenceGenerator(name = "sale_seq_gen", sequenceName = "sales_id_seq", allocationSize = 1)
     @Column(name = "id_sale")
     private Long idSale;
     private Double total;

@@ -6,6 +6,7 @@ import com.tejidos.persistence.repository.AddressRepository;
 import com.tejidos.presentation.dto.request.AddressRequest;
 import com.tejidos.presentation.dto.response.AddressResponse;
 import com.tejidos.service.AddressService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -45,6 +46,13 @@ public class AddressServiceImpl implements AddressService {
         if(optionalAddress.isEmpty()){
             throw new NotFoundException("Address with id: " + idAddress + " not found");
         }
+        if(addressRepository.existsByStreetAndNumberAndStateAndProvince(
+                addressRequest.street(),
+                addressRequest.number(),
+                addressRequest.state(),
+                addressRequest.province())){
+            throw new DataIntegrityViolationException("The combination is already created in database");
+        }
         Address address = optionalAddress.get();
         address.setNumber(addressRequest.number());
         address.setProvince(addressRequest.province());
@@ -56,7 +64,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public String saveAddress(AddressRequest addressRequest) {
-        Address address = new Address(new Client(addressRequest.idClient()), addressRequest.number(), addressRequest.province(), addressRequest.state(), addressRequest.street());
+        Client client = new Client(addressRequest.idClient());
+        Address address = new Address(client, addressRequest.number(), addressRequest.province(), addressRequest.state(), addressRequest.street());
         addressRepository.save(address);
         return "Address created successfully";
     }
