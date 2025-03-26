@@ -6,6 +6,7 @@ import com.tejidos.persistence.repository.PaymentRepository;
 import com.tejidos.presentation.dto.request.PaymentRequest;
 import com.tejidos.service.PaymentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 
@@ -19,12 +20,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public Payment findById(Long idPayment) {
-        return paymentRepository.findById(idPayment)
+        return paymentRepository.findByIdPaymentAndDeletedFalse(idPayment)
                 .orElseThrow(() -> new NotFoundException("Payment with id: " + idPayment + " not found."));
     }
 
     @Override
+    @Transactional
     public Payment savePayment(PaymentRequest paymentRequest) {
         TypePayment typePayment = new TypePayment(paymentRequest.idTypePayment());
         Payment payment = new Payment(paymentRequest.totalPayment(), paymentRequest.descriptionPayment(), typePayment);
@@ -33,7 +36,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Boolean deletePayment(Long idPayment) {
-        Payment payment = paymentRepository.findById(idPayment)
+        Payment payment = paymentRepository.findByIdPaymentAndDeletedFalse(idPayment)
                 .orElseThrow(() -> new NotFoundException("Payment with id: " + idPayment + " not found."));
         payment.setDeleted(true);
         paymentRepository.save(payment);
