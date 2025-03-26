@@ -1,3 +1,4 @@
+DELETE FROM items;
 DELETE FROM units;
 DELETE FROM categories;
 DELETE FROM types_payment;

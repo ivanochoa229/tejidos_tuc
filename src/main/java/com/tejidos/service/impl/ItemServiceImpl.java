@@ -47,21 +47,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemResponse updateItem(ItemRequest itemRequest, Long idItem) {
         Optional<Item> optionalItem = itemRepository.findByIdItemAndDeletedFalse(idItem);
         if (optionalItem.isEmpty()) {
             throw new NotFoundException("Item with id: " + idItem + " not found");
         }
         Item item = optionalItem.get();
-        Category category = new Category(itemRequest.idCategory());
-        Unit unit = new Unit(itemRequest.idUnit());
         item.setPriceItem(itemRequest.priceItem());
         item.setDescriptionItem(itemRequest.descriptionItem());
         item.setQuantity(item.getQuantity());
-        item.setUnit(unit);
-        item.setCategory(category);
         itemRepository.save(item);
-        return new ItemResponse(idItem, item.getDescriptionItem(), item.getPriceItem(), unit.getUnitName(), category.getNameCategory(), itemRequest.quantity());
+        return new ItemResponse(idItem, item.getDescriptionItem(), item.getPriceItem(),null, null, itemRequest.quantity());
     }
 
     @Override
@@ -72,10 +69,12 @@ public class ItemServiceImpl implements ItemService {
         }
         Item item = optionalItem.get();
         item.setDeleted(true);
+        itemRepository.save(item);
         return "Item deleted successfully";
     }
 
     @Override
+    @Transactional
     public String saveItem(ItemRequest itemRequest) {
         Unit unit = new Unit(itemRequest.idUnit());
         Category category = new Category(itemRequest.idCategory());
@@ -85,6 +84,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item findEntityById(Long idItem) {
         Optional<Item> optionalItem = itemRepository.findById(idItem);
         if(optionalItem.isEmpty()){
