@@ -1,3 +1,7 @@
+DELETE FROM sales_items;
+DELETE FROM sales;
+DELETE FROM payments;
+DELETE FROM items;
 DELETE FROM units;
 DELETE FROM categories;
 DELETE FROM types_payment;

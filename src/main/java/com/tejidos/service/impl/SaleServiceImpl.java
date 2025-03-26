@@ -52,6 +52,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+    @Transactional
     public SaleResponse findById(Long idSale) {
         Sale sale = getSale(idSale);
         return new SaleResponse(idSale, sale.getTotal(),
@@ -129,17 +130,4 @@ public class SaleServiceImpl implements SaleService {
         }
         return optionalSale.get();
     }
-
-    private SaleResponse mapToSaleResponse(Sale sale) {
-        List<String> items = sale.getSaleItems().stream()
-                .map(saleItem -> saleItem.getItem().getDescriptionItem())
-                .toList();
-        return new SaleResponse(
-                sale.getIdSale(),
-                sale.getTotal(),
-                sale.getStatus().name(),
-                items
-        );
-    }
-
 }

@@ -7,6 +7,7 @@ import com.tejidos.presentation.dto.request.ClientRequest;
 import com.tejidos.presentation.dto.response.ClientResponse;
 import com.tejidos.service.ClientService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
@@ -22,10 +23,6 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepository = clientRepository;
     }
 
-    @Override
-    public Boolean clientExitsAndIsNotDeleted(Long idClient) {
-        return clientRepository.clientExistsAndIsNotDeleted(idClient).isPresent();
-    }
 
     @Override
     public String saveClient(ClientRequest clientRequest) {
@@ -59,6 +56,7 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
+    @Transactional
     public ClientResponse findById(Long idClient) {
         Optional<Client> optionalClient = clientRepository.findByIdClientAndDeletedFalse(idClient);
         if(optionalClient.isEmpty()){
@@ -68,6 +66,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional
     public ClientResponse updateClient(ClientRequest clientRequest, Long idClient) {
         Optional<Client> optionalClient = clientRepository.findByIdClientAndDeletedFalse(idClient);
         if(optionalClient.isEmpty()){
