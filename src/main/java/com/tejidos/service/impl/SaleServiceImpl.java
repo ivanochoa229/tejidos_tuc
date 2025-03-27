@@ -80,35 +80,57 @@ public class SaleServiceImpl implements SaleService {
     @Override
     @Transactional
     public String saveSale(SaleRequest saleRequest) {
-        Sale sale = saleRepository.save(new Sale(new Client(saleRequest.idClient()),Status.PENDING_PAYMENT, 0.0 ));
 
         List<SaleItemDTO> saleItems = new ArrayList<>();
         double total = 0.0;
 
         for (SaleLineDetail saleLineDetail : saleRequest.saleLineDetails()) {
-
             Item item = itemService.findEntityById(saleLineDetail.itemId());
-            if(item.getQuantity() - saleLineDetail.quantity() < 0){
-                return null;
+
+            if (item.getQuantity() < saleLineDetail.quantity()) {
+                throw new IllegalArgumentException("Stock is not enough for : " + item.getDescriptionItem());
             }
-            SaleItemDTO saleItem = new SaleItemDTO(item.getIdItem(), sale.getIdSale(),saleLineDetail.quantity(), item.getPriceItem(), item.getPriceItem() * saleLineDetail.quantity());
-            saleItems.add(saleItem);
-
-            item.setQuantity(item.getQuantity() - saleLineDetail.quantity());
-            itemService.updateItem(new ItemRequest(item.getDescriptionItem(), item.getPriceItem(), item.getUnit().getIdUnit(), item.getCategory().getIdCategory(), item.getQuantity()), item.getIdItem());
-            total += saleItem.subtotal();
-
         }
 
+        Sale sale = new Sale(new Client(saleRequest.idClient()), Status.PENDING_PAYMENT, 0.0);
+
+        for (SaleLineDetail saleLineDetail : saleRequest.saleLineDetails()) {
+            Item item = itemService.findEntityById(saleLineDetail.itemId());
+            item.setQuantity(item.getQuantity() - saleLineDetail.quantity());
+            SaleItemDTO saleItem = new SaleItemDTO(
+                    item.getIdItem(),
+                    sale.getIdSale(),
+                    saleLineDetail.quantity(),
+                    item.getPriceItem(),
+                    item.getPriceItem() * saleLineDetail.quantity()
+            );
+            saleItems.add(saleItem);
+            total += saleItem.subtotal();
+        }
         sale.setTotal(total);
-        Payment payment = paymentService.savePayment(new PaymentRequest(saleRequest.paymentRequest().descriptionPayment(), saleRequest.paymentRequest().idTypePayment(), total));
+        Payment payment = paymentService.savePayment(
+                new PaymentRequest(
+                        saleRequest.paymentRequest().descriptionPayment(),
+                        saleRequest.paymentRequest().idTypePayment(),
+                        total
+                )
+        );
         sale.setPayment(payment);
-        saleRepository.save(sale);
-
+        sale = saleRepository.save(sale);
         saleItemService.saveAll(saleItems);
-
+        for (SaleLineDetail saleLineDetail : saleRequest.saleLineDetails()) {
+            Item item = itemService.findEntityById(saleLineDetail.itemId());
+            itemService.updateItem(new ItemRequest(
+                    item.getDescriptionItem(),
+                    item.getPriceItem(),
+                    item.getUnit().getIdUnit(),
+                    item.getCategory().getIdCategory(),
+                    item.getQuantity()
+            ), item.getIdItem());
+        }
         return "Sale Created Successfully";
     }
+
 
     @Override
     public String finishSale(Long idSale) {
@@ -121,7 +143,6 @@ public class SaleServiceImpl implements SaleService {
         saleRepository.save(sale);
         return "Sale finished successfully";
     }
-
 
     private Sale getSale(Long idSale) {
         Optional<Sale> optionalSale = saleRepository.findById(idSale);

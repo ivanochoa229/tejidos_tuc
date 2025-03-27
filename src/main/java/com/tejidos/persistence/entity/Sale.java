@@ -41,6 +41,13 @@ public class Sale {
         this.total = total;
     }
 
+    public Sale(Long idSale, Client client, Status status, Double total) {
+        this.idSale = idSale;
+        this.client = client;
+        this.status = status;
+        this.total = total;
+    }
+
     public Payment getPayment() {
         return payment;
     }
