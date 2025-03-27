@@ -5,6 +5,8 @@ import com.tejidos.presentation.dto.response.SaleResponse;
 import com.tejidos.utils.Status;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -12,13 +14,16 @@ import org.springframework.test.context.jdbc.Sql;
 import org.webjars.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ActiveProfiles("Test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Sql(scripts = {"/db_templates_test/SaleUseCaseTestInserts.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @Sql(scripts = {"/db_templates_test/DeleteAllTemplateSqlTest.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+@ExtendWith(MockitoExtension.class)
 public class SaleServiceTest {
+
+
+    //****************************************** INTEGRATION TEST ******************************************************************** //
 
     @Autowired
     private SaleService saleService;

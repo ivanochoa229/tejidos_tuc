@@ -49,6 +49,18 @@ public class Item {
         this.deleted = false;
     }
 
+    public Item(Long idItem, Category category, String descriptionItem, Double priceItem, Double quantity, Unit unit) {
+        this.idItem = idItem;
+        this.category = category;
+        this.descriptionItem = descriptionItem;
+        this.priceItem = priceItem;
+        this.quantity = quantity;
+        this.unit = unit;
+        this.deleted = false;
+    }
+
+
+
     public Boolean getDeleted() {
         return deleted;
     }

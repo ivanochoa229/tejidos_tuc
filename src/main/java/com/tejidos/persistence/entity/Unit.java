@@ -25,6 +25,11 @@ public class Unit {
         this.idUnit = idUnit;
     }
 
+    public Unit(Long idUnit, String unitName) {
+        this.idUnit = idUnit;
+        this.unitName = unitName;
+    }
+
     public Unit(String unitName) {
         this.unitName = unitName;
     }

@@ -16,6 +16,11 @@ public class TypePayment {
     public TypePayment() {
     }
 
+    public TypePayment(Long idTypePayment, String typePayment) {
+        this.idTypePayment = idTypePayment;
+        this.typePayment = typePayment;
+    }
+
     public TypePayment(Long idTypePayment) {
         this.idTypePayment = idTypePayment;
     }

@@ -21,6 +21,11 @@ public class Category {
     public Category() {
     }
 
+    public Category(Long idCategory, String nameCategory) {
+        this.idCategory = idCategory;
+        this.nameCategory = nameCategory;
+    }
+
     public Category(Long idCategory) {
         this.idCategory = idCategory;
     }
